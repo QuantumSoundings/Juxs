@@ -8,7 +8,7 @@ import net.minecraft.item.ItemRecord;
 public class FeelingGood extends ItemRecord{
 
     public FeelingGood(int i) {
-        super(i, "mods.Juxs.sound.feeling_good.ogg");
+        super(i, "mods.Juxs.sound.feeling_good");
         setUnlocalizedName("Feeling_Good");
     }
     @SideOnly(Side.CLIENT)

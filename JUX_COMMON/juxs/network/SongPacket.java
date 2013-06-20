@@ -17,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.src.ModLoader;
+import net.minecraft.world.World;
 
 public class SongPacket {
         
@@ -28,12 +29,12 @@ public class SongPacket {
         dos.writeInt(x);
         dos.writeInt(y);
         dos.writeInt(z);
-        dos.writeUTF(sound+"play");
+        dos.writeUTF(sound);
         packet.data=bos.toByteArray();
         packet.length=bos.size();
         Side side = FMLCommonHandler.instance().getEffectiveSide();
         if (side == Side.SERVER) {
-                // We are on the server side.
+                PacketDispatcher.sendPacketToAllAround(x, y, z, 50.0, 0, packet);
         } else if (side == Side.CLIENT) {
                 // We are on the client side.
                 PacketDispatcher.sendPacketToServer(packet);
@@ -47,10 +48,13 @@ public class SongPacket {
         int y=data.readInt();
         int z=data.readInt();
         String s=data.readUTF();
-        if(packet.channel.equals(Reference.CHANNEL+"Stop"))
-            ModLoader.getMinecraftInstance().sndManager.playStreaming((String)null,x,y,z);
+        System.out.println(s);
+        if(packet.channel.equals(Reference.CHANNEL+"STOP"))
+            ModLoader.getMinecraftInstance().theWorld.playRecord((String)null,x,y,z);
         else
-            ModLoader.getMinecraftInstance().sndManager.playStreaming(s.substring(0, s.length()-4),x,y,z);
+            ModLoader.getMinecraftInstance().theWorld.playRecord(s,x,y,z);
+            //World.class.newInstance().playRecord(s.substring(0,s.length()-4),x,y,z);
+            //ModLoader.getMinecraftInstance().sndManager.playStreaming(s.substring(0, s.length()-4),x,y,z);
     }
 
 }

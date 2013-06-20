@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+import juxs.core.radio.RadioInit;
 import juxs.lib.Reference;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -23,24 +24,43 @@ public class PacketHandler implements IPacketHandler{
     
         if (packet.channel.contains(Reference.CHANNEL)) {
             try {
-                handleRandom(packet);
+                handleRandom(packet,player);
             } catch (IOException e) {
                 e.printStackTrace();
             }
     }
 }
 
-    private void handleRandom(Packet250CustomPayload packet) throws IOException {
-        DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
-    
+    private void handleRandom(Packet250CustomPayload packet, Player player) throws IOException {
+            DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
+            EntityPlayer play= (EntityPlayer)player;
         if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT){
+            if(packet.channel.equals(Reference.CHANNEL+"REMOVE"))
+                RadioUpdate.execute(packet);
+            else if(packet.channel.equals(Reference.CHANNEL+"TIMEUNTIL")){
+                int ticks=inputStream.readInt();
+                int minute=ticks/20/60;
+                int sec= (ticks/20)-(minute*60);
+                
+                play.addChatMessage(String.format("Next Song will begin in %d:%02d",minute,sec));
+            }
+            else
+                SongPacket.execute(inputStream,packet);
+            System.out.println("Packet Received From Server");
             
-            SongPacket.execute(inputStream,packet);
         }
         else{
-           System.out.println("Packet Received");
-           PacketDispatcher.sendPacketToAllPlayers(packet);
-           
+            EntityPlayerMP p= (EntityPlayerMP)play;
+            if(packet.channel.equals(Reference.CHANNEL+"TIMEUNTIL")){
+                new RadioUpdate(Reference.CHANNEL+"TIMEUNTIL",(int)p.posX,(int)p.posY,(int) p.posZ,RadioInit.timeRemaining(),true);
+            }
+            else if(packet.channel.equals(Reference.CHANNEL+"REMOVE")){
+                RadioUpdate.execute(packet);
+                PacketDispatcher.sendPacketToAllPlayers(packet);
+            }
+            else               
+                PacketDispatcher.sendPacketToAllPlayers(packet);
+            System.out.println("Packet Received From Player");
         }
 
     }
