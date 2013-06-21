@@ -2,24 +2,25 @@ package mods.juxs.block;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import mods.juxs.Juxs;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ModBlocks {
-    public static Block Jux;
+    //public static Block Jux;
     
     
     public static void init(){
-        Jux = new JuxBox(2451);
+        //Jux = new JuxBox(2451);
         
-        GameRegistry.registerBlock(Jux, "JuxBox");
-        LanguageRegistry.addName(Jux, "Jux Box");
+        GameRegistry.registerBlock(Juxs.juxBox, "JuxBox");
+        LanguageRegistry.addName(Juxs.juxBox, "Jux Box");
         
         initBlockRecipes();
     }
     public static void initBlockRecipes(){
-        GameRegistry.addRecipe(new ItemStack(Jux), new Object[]{"ioi","odo","ioi",'i',Item.ingotIron,'o',Item.ingotGold,'d',Item.diamond});
+        GameRegistry.addRecipe(new ItemStack(Juxs.juxBox), new Object[]{"ioi","odo","ioi",'i',Item.ingotIron,'o',Item.ingotGold,'d',Item.diamond});
     }
 
 }

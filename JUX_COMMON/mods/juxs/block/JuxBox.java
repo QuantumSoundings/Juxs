@@ -5,6 +5,7 @@ package mods.juxs.block;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import mods.juxs.Juxs;
 import mods.juxs.core.radio.Location;
 import mods.juxs.core.radio.RadioInit;
 import mods.juxs.lib.Reference;
@@ -33,6 +34,7 @@ public class JuxBox extends BlockContainer {
         super(id, Material.rock);
         this.setUnlocalizedName("JuxBox");
         this.setHardness(2F);
+        this.setCreativeTab(Juxs.juxTab);
     }
     @Override
     @SideOnly(Side.CLIENT)
