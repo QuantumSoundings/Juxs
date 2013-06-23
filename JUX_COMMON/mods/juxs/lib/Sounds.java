@@ -2,9 +2,17 @@ package mods.juxs.lib;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.ModLoader;
 
@@ -14,19 +22,17 @@ public class Sounds {
     public static ArrayList<Integer> timeInTicks=new ArrayList<Integer>();
     
     public static void buildList(){   
-        try {
-            Scanner s= new Scanner(new File(Reference.MOD_DIR+"/juxs/songList.txt"));
-            while(s.hasNextLine()){
-	            String time=s.nextLine();
-	            if(!(time.length()>0))
-	                break;
-	            songs.add(/*SOUND_LOCATION+*/time.substring(0,time.indexOf(';')));
-	            time=time.substring(time.indexOf(';')+1,time.length());
-	            timeInTicks.add((Integer.parseInt(time.substring(0,time.indexOf(':')))*60*20)+(Integer.parseInt(time.substring(time.indexOf(':')+1))*20));
-            }
-            s.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+		File soundFolder= new File(Reference.MOD_DIR+"/juxs");
+		for(File fileEntry:soundFolder.listFiles()){
+			if(fileEntry.getName().contains(".ogg")){
+				songs.add(fileEntry.getName());
+				try {
+					Ogg temp = new Ogg(fileEntry);
+					timeInTicks.add((int)(temp.getSeconds()*20));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}			
+			}			
+		}
     }
 }

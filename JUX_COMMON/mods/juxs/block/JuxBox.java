@@ -72,7 +72,8 @@ public class JuxBox extends BlockContainer {
 					e.printStackTrace();
 				}
     		}
-    		else{													//if not sneaking time until next song
+    		else{	
+    			//player.openGui(Juxs.instance, 0, world, x, y, z);//if not sneaking time until next song
     			try {
     				new RadioUpdate(Reference.CHANNEL+"TIMEUNTIL",x,y,z,0);
     			} catch (IOException e) {

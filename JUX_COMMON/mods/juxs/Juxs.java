@@ -3,7 +3,7 @@ package mods.juxs;
 import java.io.File;
 import java.util.EnumSet;
 
-
+import com.jcraft.jorbis.Block;
 
 
 import cpw.mods.fml.common.Mod;
@@ -17,6 +17,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -62,7 +63,7 @@ public class Juxs {
 			}
 		};
 		juxBox= new JuxBox(2451);
-        
+		NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());
         proxy.registerSoundHandler();
         TickRegistry.registerTickHandler(new JuxsTickHandler(EnumSet.of(TickType.SERVER)), Side.SERVER);
         ModBlocks.init();

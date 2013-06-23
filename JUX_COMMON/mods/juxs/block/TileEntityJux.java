@@ -8,6 +8,7 @@ import mods.juxs.core.radio.Location;
 import mods.juxs.core.radio.RadioInit;
 import mods.juxs.lib.Reference;
 import mods.juxs.network.RadioUpdate;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -33,4 +34,8 @@ public class TileEntityJux extends TileEntity {
 		}
 	}
 	@Override public boolean canUpdate() { return true; }
+	public boolean isUseableByPlayer(EntityPlayer player) {
+		// TODO Auto-generated method stub
+		return true;
+	}
 }
