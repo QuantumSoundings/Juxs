@@ -7,6 +7,7 @@ import mods.juxs.block.TileEntityJux;
 import mods.juxs.core.radio.Location;
 import mods.juxs.core.radio.RadioInit;
 import mods.juxs.lib.Reference;
+import mods.juxs.network.RequestPacket;
 import mods.juxs.network.StationChangePacket;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -43,11 +44,13 @@ public class JuxBoxGUI extends GuiContainer {
         	switch(guibutton.id){
         		case 1:{
         			new StationChangePacket(Reference.CHANNEL+"CHANGEN",jux.getStation(),jux.xCoord,jux.yCoord,jux.zCoord);
+        			new RequestPacket(Reference.CHANNEL+"REQUEST",jux.xCoord,jux.yCoord,jux.zCoord);
         			jux.currStation=RadioInit.getNextStation(jux.getStation());
         			break;
         		}
         		case 2:{
         			new StationChangePacket(Reference.CHANNEL+"CHANGEP",jux.getStation(),jux.xCoord,jux.yCoord,jux.zCoord);
+        			new RequestPacket(Reference.CHANNEL+"REQUEST",jux.xCoord,jux.yCoord,jux.zCoord);
         			jux.currStation=RadioInit.getPrevStation(jux.getStation());
         			break;
         		}//radioStation change code here
