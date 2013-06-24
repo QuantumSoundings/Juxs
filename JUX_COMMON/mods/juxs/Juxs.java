@@ -1,6 +1,7 @@
 package mods.juxs;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.EnumSet;
 
 import com.jcraft.jorbis.Block;
@@ -26,6 +27,7 @@ import mods.juxs.block.ModBlocks;
 import mods.juxs.block.TileEntityJux;
 import mods.juxs.client.audio.SoundHandler;
 import mods.juxs.core.radio.RadioInit;
+import mods.juxs.core.radio.RadioStation;
 import mods.juxs.item.ModItems;
 import mods.juxs.lib.Reference;
 import mods.juxs.lib.Sounds;
@@ -39,7 +41,7 @@ import net.minecraft.src.ModLoader;
 import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid=Reference.MOD_ID, name=Reference.MOD_NAME, version=Reference.VERSION)
-@NetworkMod(channels={Reference.CHANNEL+"CHECK",Reference.CHANNEL+"PLAY",Reference.CHANNEL+"STOP",Reference.CHANNEL+"TIMEUNTIL",Reference.CHANNEL+"REMOVE",Reference.CHANNEL+"NEXT"},clientSideRequired=true,serverSideRequired=true,packetHandler=PacketHandler.class)
+@NetworkMod(channels={Reference.CHANNEL+"REQUEST",Reference.CHANNEL+"CHANGEP",Reference.CHANNEL+"CHANGEN",Reference.CHANNEL+"CHECK",Reference.CHANNEL+"PLAY",Reference.CHANNEL+"STOP",Reference.CHANNEL+"TIMEUNTIL",Reference.CHANNEL+"REMOVE",Reference.CHANNEL+"NEXT"},clientSideRequired=true,serverSideRequired=true,packetHandler=PacketHandler.class)
 public class Juxs {
     @Instance(Reference.MOD_ID)
     public static Juxs instance;
@@ -48,6 +50,7 @@ public class Juxs {
     public static CommonProxy proxy;
     public static CreativeTabs juxTab;
     public static net.minecraft.block.Block juxBox;
+    public static ArrayList<RadioStation> stations;
     
     @PreInit
     public void preInit(FMLPreInitializationEvent event){
@@ -62,6 +65,7 @@ public class Juxs {
 				return "Juxs";
 			}
 		};
+		stations= new ArrayList<RadioStation>();
 		juxBox= new JuxBox(2451);
 		NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());
         proxy.registerSoundHandler();

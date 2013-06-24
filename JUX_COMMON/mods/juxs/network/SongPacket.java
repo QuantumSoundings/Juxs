@@ -11,6 +11,7 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
 
+import mods.juxs.block.TileEntityJux;
 import mods.juxs.lib.Reference;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
@@ -48,11 +49,14 @@ public class SongPacket {
         int y=data.readInt();
         int z=data.readInt();
         String s=data.readUTF();
-        System.out.println(s);
+        System.out.println(s+" from SongPacketClass");
+        
         if(packet.channel.equals(Reference.CHANNEL+"STOP"))
             ModLoader.getMinecraftInstance().theWorld.playRecord((String)null,x,y,z);
-        else
+        else{
+        	((TileEntityJux) ModLoader.getMinecraftInstance().theWorld.getBlockTileEntity(x, y, z)).currPlaying=s;
             ModLoader.getMinecraftInstance().theWorld.playRecord(s,x,y,z);
+        }
             //World.class.newInstance().playRecord(s.substring(0,s.length()-4),x,y,z);
             //ModLoader.getMinecraftInstance().sndManager.playStreaming(s.substring(0, s.length()-4),x,y,z);
     }

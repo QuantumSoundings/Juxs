@@ -41,10 +41,11 @@ public class JuxProxPacket {
 	public static void execue(Packet250CustomPayload packet) throws IOException{
 		System.out.println("Executing JuxProxPacket");
 		DataInputStream in= new DataInputStream(new ByteArrayInputStream(packet.data));
+		String station=in.readUTF();
 		Location player= new Location(in.readInt(),in.readInt(),in.readInt());
-		RadioInit.removeBox(player);
+		RadioInit.getStation(station).removeBox(player);
 		ArrayList<Boolean> prox= new ArrayList<Boolean>();
-		for(Location a:RadioInit.juxboxes){
+		for(Location a:RadioInit.getStation(station).boxes){
 			prox.add(Location.within(20,player,a));
 		}
 		if(!prox.contains(true)){

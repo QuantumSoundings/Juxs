@@ -13,7 +13,7 @@ import net.minecraftforge.common.MinecraftForge;
 public class CommonProxy implements IGuiHandler{
     
     public void registerSoundHandler(){
-        RadioInit.buildRadioList();
+        Sounds.buildList();
     }
     
     @Override

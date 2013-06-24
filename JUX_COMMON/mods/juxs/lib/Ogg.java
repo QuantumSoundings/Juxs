@@ -4,12 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-/**
- * Class to get the length of ogg files.
- *
- * @version 20030220
- * @author Jörg P. M. Haeger
- */
 public class Ogg {
 	int audio_channels;
 	int audio_sample_rate;
@@ -107,10 +101,11 @@ public class Ogg {
 	}
 
 	long getSeconds() {
+		System.out.println(audio_sample_rate+" "+sampleNum);
 		if (audio_sample_rate > 0)
 			return sampleNum / audio_sample_rate;
 		else
-			return 0;
+			return sampleNum/44100;
 	}
 	public int read32Bits(InputStream inStream) throws Exception {
 		int n = 0;

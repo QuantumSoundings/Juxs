@@ -11,7 +11,9 @@ import mods.juxs.core.radio.RadioInit;
 import mods.juxs.lib.Reference;
 import mods.juxs.network.JuxProxPacket;
 import mods.juxs.network.RadioUpdate;
+import mods.juxs.network.RequestPacket;
 import mods.juxs.network.SongPacket;
+import mods.juxs.network.StationChangePacket;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -29,12 +31,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class JuxBox extends BlockContainer {
 	private Icon[] icon=new Icon[3];
+	//public String currStation;
     
     public JuxBox(int id) {
         super(id, Material.rock);
         this.setUnlocalizedName("JuxBox");
         this.setHardness(2F);
         this.setCreativeTab(Juxs.juxTab);
+
     }
     @Override
     @SideOnly(Side.CLIENT)
@@ -61,21 +65,22 @@ public class JuxBox extends BlockContainer {
     	else return icon[1];
     	
     }
-    
+
     public boolean onBlockActivated(World world, int x, int y, int z,EntityPlayer player, int a, float b, float c, float d){
     	if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT) {
     		if(player.isSneaking()){	//if sneaking changes to next song
     			//System.out.println(player.username+" is sneaking");
     			try {
-					new RadioUpdate(Reference.CHANNEL+"NEXT",x,y,z,0);
+					new RadioUpdate(Reference.CHANNEL+"NEXT",((TileEntityJux)(world.getBlockTileEntity(x,y,z))).getStation(),x,y,z);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
     		}
     		else{	
-    			//player.openGui(Juxs.instance, 0, world, x, y, z);//if not sneaking time until next song
+    			player.openGui(Juxs.instance, 0, world, x, y, z);//if not sneaking time until next song
+    			new RequestPacket(Reference.CHANNEL+"REQUEST",x,y,z);
     			try {
-    				new RadioUpdate(Reference.CHANNEL+"TIMEUNTIL",x,y,z,0);
+    				new RadioUpdate(Reference.CHANNEL+"TIMEUNTIL",((TileEntityJux)(world.getBlockTileEntity(x,y,z))).getStation(),x,y,z);
     			} catch (IOException e) {
     				e.printStackTrace();
     			}
@@ -84,34 +89,24 @@ public class JuxBox extends BlockContainer {
         
         return true;
     }
-    /*@Override
-    public void onBlockAdded(World par1World, int par2, int par3, int par4)
+    @Override
+    public void onBlockAdded(World world, int x, int y, int z)
     {
         if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER){
-            RadioInit.addBox(new Location(par2,par3,par4));
-            if(RadioInit.isPlaying()){
-                //System.out.println("Waiting until next song...");
-                try {
-                    new RadioUpdate(Reference.CHANNEL+"TIMEUNTIL",par2,par3,par4,RadioInit.ticks,true);
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
+            ((TileEntityJux)world.getBlockTileEntity(x,y,z)).currStation="default";
+            
         }
-        super.onBlockAdded(par1World, par2, par3, par4);
-    }*/
+        super.onBlockAdded(world, x, y, z);
+    }
     public void breakBlock(World world, int x, int y, int z, int id, int meta) {
         if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT){
         }
         else{
         	Location player=new Location(x,y,z);
-        	RadioInit.removeBox(player);
-        	ArrayList<Boolean> prox= new ArrayList<Boolean>();
-    		for(Location a:RadioInit.juxboxes){
-    			prox.add(Location.within(20,player,a));
-    		}
-    		if(!prox.contains(true)){
+        	//new StationChangePacket(Reference.CHANNEL+"REMOVE","",x,y,z);
+        	RadioInit.removeTheHardWay(player);
+        	//System.out.println("[JuxBox][Server] Boxed Removed form this station:"+((TileEntityJux)world.getBlockTileEntity(x,y,z)).getStation());
+    		if((RadioInit.getNearBy(player)).size()==0){
     			//System.out.println(prox.contains(true));
     			try {
 					new SongPacket("",Reference.CHANNEL+"STOP",player.x,player.y,player.z);

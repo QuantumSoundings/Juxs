@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import mods.juxs.Juxs;
 import mods.juxs.lib.Reference;
 import mods.juxs.lib.Sounds;
 import mods.juxs.network.SongPacket;
@@ -17,91 +18,98 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class RadioInit {
     public static HashMap<String,Integer> songs=new HashMap<String,Integer>();
-    public static ArrayList<String> songList= new ArrayList<String>();
-    public static ArrayList<Location> juxboxes=new ArrayList<Location>();
-    public static int curr;
-    public static int ticks=0;
-    public static boolean next=false,removeBox=false;
-    public static Location temp;
-    public static void addSong(String s, int lengthIT){
-        songs.put(s, lengthIT);
-        songList.add(s);
+    public static ArrayList<RadioStation> stations= new ArrayList<RadioStation>();
+   
+    
+    public static void addStation(String name){
+    	stations.add(new RadioStation(name));
+    	System.out.println("[RadioInit]["+FMLCommonHandler.instance().getEffectiveSide().toString()+"] Added station "+name+" "+getStation(name).Name);
     }
-    public static int timeRemaining(){
-        return songs.get(songList.get(curr))-ticks;
-    }
-    public static void buildRadioList(){
-        Sounds.buildList();
-        for(int i=0;i<Sounds.songs.size();i++)
-            try{   
-                RadioInit.addSong(Sounds.songs.get(i).replaceAll("/", ".").substring(0,Sounds.songs.get(i).length()-4),Sounds.timeInTicks.get(i));
-                //System.out.println(Sounds.songs.get(i));
-            }catch(Exception e){}
-        randomize();
-    }
-    public static void next(){
-    	next=true;
+    public static void addStationSong(String station,String song){
+    	for(int i=0;i<stations.size();i++){
+    		if(stations.get(i).Name.equals(station)){
+    			stations.get(i).addSong(song);
+    			System.out.println("[RadioInit]["+FMLCommonHandler.instance().getEffectiveSide().toString()+"] Added song "+song+" "+getStation(station).songs.toString());
+    		}
     	
+    	}
     }
-    public static void remove(Location l){
-    	temp=l;
-    	removeBox=true;
+    public static void addStationBox(String station, Location a){
+    	for(RadioStation s:stations){
+    		if(s.Name.equals(station)) s.addBox(a);
+    	}
     }
-    public static void addBox(Location a){
-        juxboxes.add(a);
-        //System.out.printf("added box at %d %d %d",a.x,a.y,a.z);
-        if(juxboxes.size()==1)
-            startRadio();
+    public static void removeStationBox(String station, Location a){
+    	for(RadioStation s:stations){
+    		if(s.Name.equals(station)) s.removeBox(a);
+    	}
     }
-    public static void removeBox(Location a){
-        for(Location b:juxboxes){
-            if(a.x==b.x&&a.y==b.y&&a.z==b.z){
-                juxboxes.remove(b);
-                break;
-            }
-        }
-        //if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
-            //System.out.printf("removed box at %d %d %d",a.x,a.y,a.z);
+    public static void removeTheHardWay(Location a){
+    	for(RadioStation s:stations)
+    		for(Location b:s.boxes)
+    			if(a.x==b.x&&a.y==b.y&&a.z==b.z){
+    				System.out.println("[RadioInit]["+FMLCommonHandler.instance().getEffectiveSide().toString()+"] Found box in station "+s.Name);
+    				s.removeBox(a);
+    				break;
+    			}
     }
+    public static String findTheHardWay(Location a){
+    	for(RadioStation s:stations)
+    		for(Location b:s.boxes)
+    			if(a.x==b.x&&a.y==b.y&&a.z==b.z){
+    				return s.Name;
+    			}
+    	return "";
+    }
+    public static ArrayList<Location> getNearBy(Location a){
+    	ArrayList<Location> near = new ArrayList<Location>();
+    	for(RadioStation s:stations)
+    		for(Location b:s.boxes)
+    			if(Location.within(50, a, b)&&!(b.x==a.x&&b.y==a.y&&b.z==a.z))
+    				near.add(b);
+    	return near;
+    }
+    public static RadioStation getStation(String name){
+    	for(int i=0;i<stations.size();i++){
+    		if(stations.get(i).Name.equals(name)){return stations.get(i);}
+    	}
+    	return null;
+    }
+    public static String getNextStation(String from){
+    	int indexOfFrom=stations.indexOf(getStation(from));
+    	int indexOfTo=(indexOfFrom+1)%stations.size();
+    	return stations.get(indexOfTo).Name;
+    }
+    public static String getPrevStation(String from){
+    	int indexOfFrom=stations.indexOf(getStation(from));
+    	int indexOfTo=(indexOfFrom+stations.size()-1)%stations.size();
+    	return stations.get(indexOfTo).Name;
+    }
+    public static void registerSong(String song, int time){
+    	songs.put(song,time);
+    }
+    public static boolean isRegistered(String song){
+    	if(songs.containsKey(song))
+    		return true;
+    	return false;
+    }
+
     public static void onTick(){
-        ticks++;
-        if(removeBox){
-        	removeBox(temp);
-        	removeBox=false;
-        	temp=null;
-        }
-        if(songs.get(songList.get(curr))==ticks||next){
-            try {
-                playNext();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if(next)next=false;
-        }
-        //if(ticks%20==0)
-            //System.out.println(ticks/20);
+    	for(int i =0;i<stations.size();i++){
+    		stations.get(i).onTick();
+    	}
+        
     }
-    public static void randomize(){
-        Collections.shuffle(songList);
-    }
-    public static String getRand(){
-        Collections.shuffle(songList);
-        return songList.get(0);
-    }
-    public static void startRadio(){
-        ticks=0;
+
+    /*public static void startRadio(){
         try {
             playNext();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public static boolean isPlaying(){
-        if(juxboxes.size()==0)
-            return false;
-        return true;
-    }
-    public static void playNext() throws IOException{
+
+    /*public static void playNext() throws IOException{
         curr= (curr+1)%songs.size();
         if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
             for(Location a :juxboxes){
@@ -110,6 +118,6 @@ public class RadioInit {
             }
         ticks=0;
     }
-    
+    */
 
 }

@@ -13,6 +13,8 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
+import mods.juxs.core.radio.RadioInit;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.ModLoader;
 
@@ -22,17 +24,68 @@ public class Sounds {
     public static ArrayList<Integer> timeInTicks=new ArrayList<Integer>();
     
     public static void buildList(){   
+    	//System.out.println("Building List");
 		File soundFolder= new File(Reference.MOD_DIR+"/juxs");
+		RadioInit.addStation("default");
 		for(File fileEntry:soundFolder.listFiles()){
+			//System.out.println("LSKfjsldkfja;sldkfj;alskdjf;l");
+			if(fileEntry.isDirectory()){
+				RadioInit.addStation(fileEntry.getName());
+				for(File entry:fileEntry.listFiles()){
+					if(entry.getName().contains(".ogg")){
+						try {
+							Ogg temp = new Ogg(entry);
+							RadioInit.registerSong(entry.getName(),(int) (temp.getSeconds()*20));
+							//System.out.println("Registered song "+entry.getName());
+							RadioInit.addStationSong(fileEntry.getName(),entry.getName());
+					
+							String song=fileEntry.getName()+"/"+entry.getName();
+						
+							songs.add(((fileEntry.getName()+"/"+entry.getName())));
+						} catch (Exception e) {e.printStackTrace();}
+					}
+					else if(entry.getName().contains(".wav")){
+						AudioInputStream audioInputStream;
+						try {
+							audioInputStream = AudioSystem.getAudioInputStream(entry);
+							AudioFormat format = audioInputStream.getFormat();
+							long frames = audioInputStream.getFrameLength();
+							double durationInSeconds = (frames+0.0) / format.getFrameRate();
+							RadioInit.registerSong(entry.getName(),(int) (durationInSeconds*20));
+							//System.out.println("Registered song "+entry.getName());
+							RadioInit.addStationSong(fileEntry.getName(),entry.getName());
+					
+							String song=fileEntry.getName()+"/"+entry.getName();
+						
+							songs.add(((fileEntry.getName()+"/"+entry.getName())));
+						} catch (UnsupportedAudioFileException e){e.printStackTrace();} catch (IOException e) {e.printStackTrace();}
+					}
+				}
+			}
 			if(fileEntry.getName().contains(".ogg")){
-				songs.add(fileEntry.getName());
+				
 				try {
 					Ogg temp = new Ogg(fileEntry);
-					timeInTicks.add((int)(temp.getSeconds()*20));
+					RadioInit.registerSong(fileEntry.getName(),(int) (temp.getSeconds()*20));
+					RadioInit.addStationSong("default",fileEntry.getName());
+					songs.add(fileEntry.getName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}			
-			}			
+			}
+			else if(fileEntry.getName().contains(".wav")){
+				AudioInputStream audioInputStream;
+				try {
+					audioInputStream = AudioSystem.getAudioInputStream(fileEntry);
+					AudioFormat format = audioInputStream.getFormat();
+					long frames = audioInputStream.getFrameLength();
+					double durationInSeconds = (frames+0.0) / format.getFrameRate();
+					RadioInit.registerSong(fileEntry.getName(),(int) (durationInSeconds*20));
+					RadioInit.addStationSong("default",fileEntry.getName());
+					songs.add(fileEntry.getName());
+				} catch (UnsupportedAudioFileException e) {e.printStackTrace();} catch (IOException e) {e.printStackTrace();}
+			}
 		}
+		System.out.println(RadioInit.songs.toString());
     }
 }

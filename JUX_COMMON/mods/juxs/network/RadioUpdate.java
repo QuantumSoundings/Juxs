@@ -15,17 +15,20 @@ import mods.juxs.core.radio.Location;
 import mods.juxs.core.radio.RadioInit;
 import mods.juxs.lib.Reference;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.World;
 
 public class RadioUpdate {
 
     
-    public RadioUpdate(String chan,int x,int y, int z,int ticks) throws IOException{
+    public RadioUpdate(String chan,String station,int x,int y, int z) throws IOException{
         
         Packet250CustomPayload packet = new Packet250CustomPayload();
         packet.channel=chan;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(bos);
         if(chan.equals(Reference.CHANNEL+"REMOVE")){
+        	dos.writeUTF(station);
             dos.writeInt(x);
             dos.writeInt(y);
             dos.writeInt(z);
@@ -33,12 +36,15 @@ public class RadioUpdate {
             packet.length=bos.size();
         }
         else if(chan.equals(Reference.CHANNEL+"TIMEUNTIL")){
-            dos.writeInt(ticks);
+        	if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
+        		dos.writeUTF(station);
+        	else
+        		dos.writeInt(RadioInit.getStation(station).timeRemaining());
             packet.data=bos.toByteArray();
             packet.length=bos.size();
         }
         else if(chan.equals(Reference.CHANNEL+"NEXT")){
-        	dos.writeInt(1);
+        	dos.writeUTF(station);
         	packet.data=bos.toByteArray();
         	packet.length=bos.size();
         }
@@ -61,7 +67,7 @@ public class RadioUpdate {
     public static void execute(Packet250CustomPayload packet){
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(packet.data));
         try {
-            RadioInit.removeBox(new Location(in.readInt(),in.readInt(),in.readInt()));
+            RadioInit.removeStationBox(in.readUTF(),new Location(in.readInt(),in.readInt(),in.readInt()));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -33,37 +33,46 @@ public class PacketHandler implements IPacketHandler{
 }
 
     private void handlePacket(Packet250CustomPayload packet, Player player) throws IOException {
-        DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
+        DataInputStream in = new DataInputStream(new ByteArrayInputStream(packet.data));
         EntityPlayer play= (EntityPlayer)player;
         
         if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT){
         	if(packet.channel.equals(Reference.CHANNEL+"REMOVE"))
         		RadioUpdate.execute(packet);
         	else if(packet.channel.equals(Reference.CHANNEL+"TIMEUNTIL")){
-        		int ticks=inputStream.readInt();
+        		int ticks=in.readInt();
         		int minute=ticks/20/60;
         		int sec= (ticks/20)-(minute*60);
         		play.addChatMessage(String.format("Next Song will begin in %d:%02d",minute,sec));
             }
+        	else if(packet.channel.equals(Reference.CHANNEL+"REQUEST")){
+        		RequestPacket.execute(in, packet);
+        	}
         	else
-        		SongPacket.execute(inputStream,packet);
+        		SongPacket.execute(in,packet);
             
         }
         else{
             EntityPlayerMP p= (EntityPlayerMP)play;
             if(packet.channel.equals(Reference.CHANNEL+"TIMEUNTIL")){
-                new RadioUpdate(Reference.CHANNEL+"TIMEUNTIL",(int)p.posX,(int)p.posY,(int) p.posZ,RadioInit.timeRemaining());
+            	System.out.println("received RadioUpdate packet from player");
+                new RadioUpdate(Reference.CHANNEL+"TIMEUNTIL",in.readUTF(),(int)p.posX,(int)p.posY,(int) p.posZ);
             }
-            //else if(packet.channel.equals(Reference.CHANNEL+"REMOVE")){
-            //    RadioUpdate.execute(packet);
-            //    PacketDispatcher.sendPacketToAllPlayers(packet);
-            //}
+            else if(packet.channel.contains(Reference.CHANNEL+"CHANGE")){
+            	StationChangePacket.execute(packet);
+            }
+            else if(packet.channel.equals(Reference.CHANNEL+"REMOVE")){
+                StationChangePacket.execute(packet);
+            }
             else if(packet.channel.equals(Reference.CHANNEL+"NEXT")){
             	if(MinecraftServer.getServer().getConfigurationManager().getOps().contains(play.username.toLowerCase()))
-            		RadioInit.next();
+            		RadioInit.getStation(in.readUTF()).next();
             }
             else if(packet.channel.equals(Reference.CHANNEL+"CHECK")){
             	JuxProxPacket.execue(packet);
+            }
+            else if(packet.channel.equals(Reference.CHANNEL+"REQUEST")){
+            	new RequestPacket(Reference.CHANNEL+"REQUEST",in.readInt(),in.readInt(),in.readInt());
             }
             else
                 PacketDispatcher.sendPacketToAllPlayers(packet);

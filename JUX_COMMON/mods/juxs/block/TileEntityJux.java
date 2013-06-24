@@ -14,21 +14,14 @@ import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityJux extends TileEntity {
 	private boolean done = false;
-	public TileEntityJux() {
-	}
+	public String currStation;
+	public String currPlaying;
 	@Override public void updateEntity() {
 		if(!done) {
 			int x = xCoord, y = yCoord, z = zCoord;
 			System.out.printf("This te claims to be at %d %d %d %n",x,y,z);
 			if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER){
-	            RadioInit.addBox(new Location(x,y,z));
-	            if(RadioInit.isPlaying()){
-	                try {
-	                    new RadioUpdate(Reference.CHANNEL+"TIMEUNTIL",x,y,z,RadioInit.ticks);
-	                } catch (IOException e) {
-	                    e.printStackTrace();
-	                }
-	            }
+	            RadioInit.addStationBox("default",new Location(x,y,z));
 	        }
 			done = true;
 		}
@@ -37,5 +30,16 @@ public class TileEntityJux extends TileEntity {
 	public boolean isUseableByPlayer(EntityPlayer player) {
 		// TODO Auto-generated method stub
 		return true;
+	}
+	public String getStation(){
+		if(currStation==null)
+			currStation="default";
+		return currStation;
+		
+	}
+	public String getPlaying(){
+		if(currPlaying==null)
+			currPlaying="N/A";
+		return currPlaying;
 	}
 }

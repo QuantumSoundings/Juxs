@@ -19,9 +19,14 @@ public class SoundHandler {
             Sounds.buildList();
             for(int i=0;i<Sounds.songs.size();i++)
                 try{
-                    event.manager.soundPoolStreaming.addSound(Sounds.songs.get(i), new File(Reference.MOD_DIR+"/juxs/"+Sounds.songs.get(i))/*this.getClass().getResource("/" + Sounds.songs.get(i))*/);
-                    RadioInit.addSong(Sounds.songs.get(i).replaceAll("/", ".").substring(0,Sounds.songs.get(i).length()-4),Sounds.timeInTicks.get(i));
-                    System.out.println(Sounds.songs.get(i));
+                	if(Sounds.songs.get(i).contains("/")){
+                        event.manager.soundPoolStreaming.addSound(Sounds.songs.get(i).substring(Sounds.songs.get(i).indexOf("/")+1), new File(Reference.MOD_DIR+"/juxs/"+Sounds.songs.get(i)));
+                		System.out.println(Sounds.songs.get(i).substring(Sounds.songs.get(i).indexOf("/")+1));
+                	}
+                	else{
+                		event.manager.soundPoolStreaming.addSound(Sounds.songs.get(i), new File(Reference.MOD_DIR+"/juxs/"+Sounds.songs.get(i)));
+                		System.out.println("[SoundHandler] Added "+Sounds.songs.get(i)+" to sound pool.");
+                	}
                 }catch(Exception e){
                 	e.printStackTrace();
                 }

@@ -12,32 +12,25 @@ import mods.juxs.block.TileEntityJux;
 
 public class JuxBoxContainer extends Container{
 	private TileEntityJux tileEntity;
-	public JuxBoxContainer (InventoryPlayer inventoryPlayer, TileEntityJux te){
+	public JuxBoxContainer (InventoryPlayer playerInv, TileEntityJux te){
         tileEntity = te;
 
-        //the Slot constructor takes the IInventory and the slot number in that it binds to
-        //and the x-y coordinates it resides on-screen
-        //for (int i = 0; i < 3; i++) {
-        //       for (int j = 0; j < 3; j++) {
-        //                addSlotToContainer(new Slot(tileEntity, j + i * 3, 62 + j * 18, 17 + i * 18));
-        //        }
-        //}
+        int var3;
 
-        //commonly used vanilla code that adds the player's inventory
-        bindPlayerInventory(inventoryPlayer);
-	}
-	protected void bindPlayerInventory(InventoryPlayer inventoryPlayer) {
-        for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 9; j++) {
-                        addSlotToContainer(new Slot(inventoryPlayer, j + i * 9 + 9,
-                                        8 + j * 18, 84 + i * 18));
-                }
+        for (var3 = 0; var3 < 3; ++var3)
+        {
+            for (int var4 = 0; var4 < 9; ++var4)
+            {
+                this.addSlotToContainer(new Slot(playerInv, var4 + var3 * 9 + 9, 8 + var4 * 18, 84 + var3 * 18));
+            }
         }
 
-        for (int i = 0; i < 9; i++) {
-                addSlotToContainer(new Slot(inventoryPlayer, i, 8 + i * 18, 142));
+        for (var3 = 0; var3 < 9; ++var3)
+        {
+            this.addSlotToContainer(new Slot(playerInv, var3, 8 + var3 * 18, 142));
         }
 	}
+
 	@Override
     public boolean canInteractWith(EntityPlayer player) {
             return tileEntity.isUseableByPlayer(player);
