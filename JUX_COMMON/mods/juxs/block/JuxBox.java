@@ -9,11 +9,10 @@ import mods.juxs.Juxs;
 import mods.juxs.core.radio.Location;
 import mods.juxs.core.radio.RadioInit;
 import mods.juxs.lib.Reference;
-import mods.juxs.network.JuxProxPacket;
-import mods.juxs.network.RadioUpdate;
+
+import mods.juxs.network.RadioUpdatePacket;
 import mods.juxs.network.RequestPacket;
 import mods.juxs.network.SongPacket;
-import mods.juxs.network.StationChangePacket;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -70,20 +69,16 @@ public class JuxBox extends BlockContainer {
     	if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT) {
     		if(player.isSneaking()){	//if sneaking changes to next song
     			//System.out.println(player.username+" is sneaking");
-    			try {
-					new RadioUpdate(Reference.CHANNEL+"NEXT",((TileEntityJux)(world.getBlockTileEntity(x,y,z))).getStation(),x,y,z);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+					new RadioUpdatePacket(Reference.CHANNEL+"NEXT",((TileEntityJux)(world.getBlockTileEntity(x,y,z))).getStation(),x,y,z);
     		}
     		else{	
     			player.openGui(Juxs.instance, 0, world, x, y, z);//if not sneaking time until next song
     			new RequestPacket(Reference.CHANNEL+"REQUEST",x,y,z);
-    			try {
-    				new RadioUpdate(Reference.CHANNEL+"TIMEUNTIL",((TileEntityJux)(world.getBlockTileEntity(x,y,z))).getStation(),x,y,z);
+    			/*try {
+    				//new RadioUpdate(Reference.CHANNEL+"TIMEUNTIL",((TileEntityJux)(world.getBlockTileEntity(x,y,z))).getStation(),x,y,z);
     			} catch (IOException e) {
     				e.printStackTrace();
-    			}
+    			}*/
     		}
     	}
         
@@ -103,10 +98,8 @@ public class JuxBox extends BlockContainer {
         }
         else{
         	Location player=new Location(x,y,z);
-        	//new StationChangePacket(Reference.CHANNEL+"REMOVE","",x,y,z);
         	RadioInit.removeTheHardWay(player);
-        	//System.out.println("[JuxBox][Server] Boxed Removed form this station:"+((TileEntityJux)world.getBlockTileEntity(x,y,z)).getStation());
-    		if((RadioInit.getNearBy(player)).size()==0){
+       		if((RadioInit.getNearBy(player)).size()==0){
     			//System.out.println(prox.contains(true));
     			try {
 					new SongPacket("",Reference.CHANNEL+"STOP",player.x,player.y,player.z);

@@ -38,7 +38,7 @@ public class PacketHandler implements IPacketHandler{
         
         if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT){
         	if(packet.channel.equals(Reference.CHANNEL+"REMOVE"))
-        		RadioUpdate.execute(packet);
+        		RadioUpdatePacket.execute(packet);
         	else if(packet.channel.equals(Reference.CHANNEL+"TIMEUNTIL")){
         		int ticks=in.readInt();
         		int minute=ticks/20/60;
@@ -55,28 +55,23 @@ public class PacketHandler implements IPacketHandler{
         else{
             EntityPlayerMP p= (EntityPlayerMP)play;
             if(packet.channel.equals(Reference.CHANNEL+"TIMEUNTIL")){
-            	System.out.println("received RadioUpdate packet from player");
-                new RadioUpdate(Reference.CHANNEL+"TIMEUNTIL",in.readUTF(),(int)p.posX,(int)p.posY,(int) p.posZ);
+            	//System.out.println("received RadioUpdate packet from player");
+                new RadioUpdatePacket(Reference.CHANNEL+"TIMEUNTIL",in.readUTF(),(int)p.posX,(int)p.posY,(int) p.posZ);
             }
             else if(packet.channel.contains(Reference.CHANNEL+"CHANGE")){
-            	StationChangePacket.execute(packet);
-            }
-            else if(packet.channel.equals(Reference.CHANNEL+"REMOVE")){
-                StationChangePacket.execute(packet);
+            	RadioUpdatePacket.execute(packet);
             }
             else if(packet.channel.equals(Reference.CHANNEL+"NEXT")){
-            	if(MinecraftServer.getServer().getConfigurationManager().getOps().contains(play.username.toLowerCase()))
+            	if(MinecraftServer.getServer().isSinglePlayer())
             		RadioInit.getStation(in.readUTF()).next();
-            }
-            else if(packet.channel.equals(Reference.CHANNEL+"CHECK")){
-            	JuxProxPacket.execue(packet);
+            	else if(MinecraftServer.getServer().getConfigurationManager().getOps().contains(play.username.toLowerCase()))
+            		RadioInit.getStation(in.readUTF()).next();
             }
             else if(packet.channel.equals(Reference.CHANNEL+"REQUEST")){
             	new RequestPacket(Reference.CHANNEL+"REQUEST",in.readInt(),in.readInt(),in.readInt());
             }
             else
-                PacketDispatcher.sendPacketToAllPlayers(packet);
-            //System.out.println("Packet Received From Player");
+                PacketDispatcher.sendPacketToAllPlayers(packet);           
         }
 
     }

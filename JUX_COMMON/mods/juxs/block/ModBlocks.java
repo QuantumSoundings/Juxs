@@ -16,6 +16,7 @@ public class ModBlocks {
         
         GameRegistry.registerBlock(Juxs.juxBox, "JuxBox");
         LanguageRegistry.addName(Juxs.juxBox, "Jux Box");
+        GameRegistry.registerTileEntity(TileEntityJux.class, "JuxBox");
         
         initBlockRecipes();
     }

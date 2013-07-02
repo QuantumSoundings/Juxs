@@ -29,7 +29,7 @@ public class RadioInit {
     	for(int i=0;i<stations.size();i++){
     		if(stations.get(i).Name.equals(station)){
     			stations.get(i).addSong(song);
-    			System.out.println("[RadioInit]["+FMLCommonHandler.instance().getEffectiveSide().toString()+"] Added song "+song+" "+getStation(station).songs.toString());
+    			//System.out.println("[RadioInit]["+FMLCommonHandler.instance().getEffectiveSide().toString()+"] Added song "+song+" "+getStation(station).songs.toString());
     		}
     	
     	}

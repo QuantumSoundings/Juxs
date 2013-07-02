@@ -21,7 +21,7 @@ public class SoundHandler {
                 try{
                 	if(Sounds.songs.get(i).contains("/")){
                         event.manager.soundPoolStreaming.addSound(Sounds.songs.get(i).substring(Sounds.songs.get(i).indexOf("/")+1), new File(Reference.MOD_DIR+"/juxs/"+Sounds.songs.get(i)));
-                		System.out.println(Sounds.songs.get(i).substring(Sounds.songs.get(i).indexOf("/")+1));
+                		System.out.println("[SoundHandler] Added "+Sounds.songs.get(i).substring(Sounds.songs.get(i).indexOf("/")+1));
                 	}
                 	else{
                 		event.manager.soundPoolStreaming.addSound(Sounds.songs.get(i), new File(Reference.MOD_DIR+"/juxs/"+Sounds.songs.get(i)));

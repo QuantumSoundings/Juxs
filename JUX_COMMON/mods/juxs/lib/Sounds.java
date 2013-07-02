@@ -86,6 +86,6 @@ public class Sounds {
 				} catch (UnsupportedAudioFileException e) {e.printStackTrace();} catch (IOException e) {e.printStackTrace();}
 			}
 		}
-		System.out.println(RadioInit.songs.toString());
+		//System.out.println(RadioInit.songs.toString());
     }
 }

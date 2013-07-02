@@ -20,28 +20,18 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.src.ModLoader;
 import net.minecraft.world.World;
 
-public class SongPacket {
+public class SongPacket extends JuxPacket{
         
     public SongPacket(String sound,String chan, int x, int y, int z) throws IOException{
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel=chan;
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        DataOutputStream dos = new DataOutputStream(bos);
-        dos.writeInt(x);
-        dos.writeInt(y);
-        dos.writeInt(z);
-        dos.writeUTF(sound);
-        packet.data=bos.toByteArray();
-        packet.length=bos.size();
+        super.setChannel(chan);
+        super.writeXYZ(x, y, z);
+        super.writeString(sound);
+        super.finalizeData();
         Side side = FMLCommonHandler.instance().getEffectiveSide();
-        if (side == Side.SERVER) {
-                PacketDispatcher.sendPacketToAllAround(x, y, z, 50.0, 0, packet);
-        } else if (side == Side.CLIENT) {
-                // We are on the client side.
+        if (side == Side.SERVER)
+                PacketDispatcher.sendPacketToAllAround(x, y, z, 50.0, 0, packet); 
+        else if (side == Side.CLIENT)
                 PacketDispatcher.sendPacketToServer(packet);
-        } else {
-                // We are on the Bukkit server.
-        } 
         
     }
     public static void execute(DataInputStream data,Packet250CustomPayload packet) throws IOException{
@@ -49,16 +39,12 @@ public class SongPacket {
         int y=data.readInt();
         int z=data.readInt();
         String s=data.readUTF();
-        System.out.println(s+" from SongPacketClass");
-        
         if(packet.channel.equals(Reference.CHANNEL+"STOP"))
             ModLoader.getMinecraftInstance().theWorld.playRecord((String)null,x,y,z);
         else{
         	((TileEntityJux) ModLoader.getMinecraftInstance().theWorld.getBlockTileEntity(x, y, z)).currPlaying=s;
             ModLoader.getMinecraftInstance().theWorld.playRecord(s,x,y,z);
         }
-            //World.class.newInstance().playRecord(s.substring(0,s.length()-4),x,y,z);
-            //ModLoader.getMinecraftInstance().sndManager.playStreaming(s.substring(0, s.length()-4),x,y,z);
     }
 
 }

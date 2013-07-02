@@ -1,14 +1,15 @@
 package mods.juxs.juxbox;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import mods.juxs.block.TileEntityJux;
 import mods.juxs.core.radio.Location;
 import mods.juxs.core.radio.RadioInit;
 import mods.juxs.lib.Reference;
+import mods.juxs.network.RadioUpdatePacket;
 import mods.juxs.network.RequestPacket;
-import mods.juxs.network.StationChangePacket;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -34,26 +35,31 @@ public class JuxBoxGUI extends GuiContainer {
         }
         public void initGui(){
         	super.initGui();
-            //make buttons
-                                    //id, x, y, width, height, text
-            buttonList.add(new GuiButton(1, (width) / 2, 72, 80, 20, "Next Station"));
-            buttonList.add(new GuiButton(2, ((width) / 2)-80, 72, 80, 20, "Prev Station"));
+                                         //id, x, y, width, height, text
+            buttonList.add(new GuiButton(1, ((width) /2)  , 65, 80, 20, "Next Station"));
+            buttonList.add(new GuiButton(2, ((width)/2)-80, 65, 80, 20, "Prev Station"));
+            buttonList.add(new GuiButton(3, ((width)/2)-80, 85,160, 20, "Next Track"));
+            
         }
         @Override
         protected void actionPerformed(GuiButton guibutton) {
         	switch(guibutton.id){
         		case 1:{
-        			new StationChangePacket(Reference.CHANNEL+"CHANGEN",jux.getStation(),jux.xCoord,jux.yCoord,jux.zCoord);
+        			new RadioUpdatePacket(Reference.CHANNEL+"CHANGEN",jux.getStation(),jux.xCoord,jux.yCoord,jux.zCoord);
         			new RequestPacket(Reference.CHANNEL+"REQUEST",jux.xCoord,jux.yCoord,jux.zCoord);
         			jux.currStation=RadioInit.getNextStation(jux.getStation());
         			break;
         		}
         		case 2:{
-        			new StationChangePacket(Reference.CHANNEL+"CHANGEP",jux.getStation(),jux.xCoord,jux.yCoord,jux.zCoord);
+        			new RadioUpdatePacket(Reference.CHANNEL+"CHANGEP",jux.getStation(),jux.xCoord,jux.yCoord,jux.zCoord);
         			new RequestPacket(Reference.CHANNEL+"REQUEST",jux.xCoord,jux.yCoord,jux.zCoord);
         			jux.currStation=RadioInit.getPrevStation(jux.getStation());
         			break;
-        		}//radioStation change code here
+        		}
+        		case 3:{
+						new RadioUpdatePacket(Reference.CHANNEL+"NEXT",((TileEntityJux) (ModLoader.getMinecraftInstance().theWorld.getBlockTileEntity(jux.xCoord,jux.yCoord,jux.zCoord))).getStation(),jux.xCoord,jux.yCoord,jux.zCoord);
+					
+        		}
         	
         	}
         	this.updateScreen();

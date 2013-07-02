@@ -16,39 +16,26 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.ModLoader;
 
-public class RequestPacket {
+public class RequestPacket extends JuxPacket{
 	public RequestPacket(String chan,int x,int y,int z){
-		Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel=chan;
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        DataOutputStream dos = new DataOutputStream(bos);
-        try{
+		super.setChannel(chan);
         	if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT){
-        	dos.writeInt(x);
-        	dos.writeInt(y);
-        	dos.writeInt(z);
-        	packet.data= bos.toByteArray();
-        	packet.length=bos.size();
+        		super.writeXYZ(x, y, z);
+        		super.finalizeData();
         	}
         	else{
-        		dos.writeInt(x);
-        		dos.writeInt(y);
-        		dos.writeInt(z);
-        		dos.writeUTF(RadioInit.findTheHardWay(new Location(x,y,z)));
-        		dos.writeUTF(RadioInit.getStation(RadioInit.findTheHardWay(new Location(x,y,z))).getPlaying().substring(0, RadioInit.getStation(RadioInit.findTheHardWay(new Location(x,y,z))).getPlaying().length()-4));
-        		packet.data=bos.toByteArray();
-        		packet.length=bos.size();
+        		super.writeXYZ(x, y, z);
+        		super.writeStation(RadioInit.findTheHardWay(new Location(x,y,z)));
+        		super.writeStation(RadioInit.getStation(RadioInit.findTheHardWay(new Location(x,y,z))).getPlaying().substring(0, RadioInit.getStation(RadioInit.findTheHardWay(new Location(x,y,z))).getPlaying().length()-4));        		
+        		super.finalizeData();
         	}
-        }catch(Exception e){e.printStackTrace();}
         Side side = FMLCommonHandler.instance().getEffectiveSide();
         if (side == Side.SERVER) {
                 PacketDispatcher.sendPacketToAllAround(x, y, z, 50.0, 0, packet);
-        } else if (side == Side.CLIENT) {
-                // We are on the client side.
-                PacketDispatcher.sendPacketToServer(packet);
-        } else {
-                // We are on the Bukkit server.
         } 
+        else if (side == Side.CLIENT) {
+                PacketDispatcher.sendPacketToServer(packet);
+        }
 		
 	}
 	public static void execute(DataInputStream in,Packet250CustomPayload packet){
@@ -58,10 +45,7 @@ public class RequestPacket {
 			int z=in.readInt();
 			((TileEntityJux)ModLoader.getMinecraftInstance().theWorld.getBlockTileEntity(x,y,z)).currStation=in.readUTF();
 			((TileEntityJux)ModLoader.getMinecraftInstance().theWorld.getBlockTileEntity(x,y,z)).currPlaying=in.readUTF();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} catch (IOException e) {e.printStackTrace();}
 		
 	}
 

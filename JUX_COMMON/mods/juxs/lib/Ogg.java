@@ -101,7 +101,7 @@ public class Ogg {
 	}
 
 	long getSeconds() {
-		System.out.println(audio_sample_rate+" "+sampleNum);
+		//System.out.println(audio_sample_rate+" "+sampleNum);
 		if (audio_sample_rate > 0)
 			return sampleNum / audio_sample_rate;
 		else
