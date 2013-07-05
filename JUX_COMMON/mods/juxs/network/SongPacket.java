@@ -11,7 +11,7 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
 
-import mods.juxs.block.TileEntityJux;
+import mods.juxs.juxbox.TileEntityJux;
 import mods.juxs.lib.Reference;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;

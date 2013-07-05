@@ -1,8 +1,8 @@
 package mods.juxs;
 
-import mods.juxs.block.TileEntityJux;
 import mods.juxs.juxbox.JuxBoxContainer;
 import mods.juxs.juxbox.JuxBoxGUI;
+import mods.juxs.juxbox.TileEntityJux;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;

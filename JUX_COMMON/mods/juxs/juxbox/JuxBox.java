@@ -1,4 +1,4 @@
-package mods.juxs.block;
+package mods.juxs.juxbox;
 
 
 
@@ -9,15 +9,17 @@ import mods.juxs.Juxs;
 import mods.juxs.core.radio.Location;
 import mods.juxs.core.radio.RadioInit;
 import mods.juxs.lib.Reference;
-
+import mods.juxs.network.MessagePacket;
 import mods.juxs.network.RadioUpdatePacket;
 import mods.juxs.network.RequestPacket;
 import mods.juxs.network.SongPacket;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.ModLoader;
 import net.minecraft.tileentity.TileEntity;
@@ -30,14 +32,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class JuxBox extends BlockContainer {
 	private Icon[] icon=new Icon[3];
-	//public String currStation;
-    
+	//public String currStation;    
     public JuxBox(int id) {
         super(id, Material.rock);
         this.setUnlocalizedName("JuxBox");
         this.setHardness(2F);
         this.setCreativeTab(Juxs.juxTab);
-
     }
     @Override
     @SideOnly(Side.CLIENT)
@@ -68,17 +68,17 @@ public class JuxBox extends BlockContainer {
     public boolean onBlockActivated(World world, int x, int y, int z,EntityPlayer player, int a, float b, float c, float d){
     	if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT) {
     		if(player.isSneaking()){	//if sneaking changes to next song
-    			//System.out.println(player.username+" is sneaking");
-					new RadioUpdatePacket(Reference.CHANNEL+"NEXT",((TileEntityJux)(world.getBlockTileEntity(x,y,z))).getStation(),x,y,z);
+				new RadioUpdatePacket(Reference.CHANNEL+"TIMEUNTIL",((TileEntityJux)(world.getBlockTileEntity(x,y,z))).getStation(),x,y,z);
     		}
     		else{	
-    			player.openGui(Juxs.instance, 0, world, x, y, z);//if not sneaking time until next song
-    			new RequestPacket(Reference.CHANNEL+"REQUEST",x,y,z);
-    			/*try {
-    				//new RadioUpdate(Reference.CHANNEL+"TIMEUNTIL",((TileEntityJux)(world.getBlockTileEntity(x,y,z))).getStation(),x,y,z);
-    			} catch (IOException e) {
-    				e.printStackTrace();
-    			}*/
+    			if(!((TileEntityJux)(world.getBlockTileEntity(x,y,z))).isDisabled){
+    				new RequestPacket(Reference.CHANNEL+"REQUEST",x,y,z);
+    				player.openGui(Juxs.instance,0,world,x,y,z);
+    			}
+    			else{
+    				player.addChatMessage("This JuxBox is disabled");
+    			}
+    			
     		}
     	}
         
@@ -88,10 +88,14 @@ public class JuxBox extends BlockContainer {
     public void onBlockAdded(World world, int x, int y, int z)
     {
         if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER){
-            ((TileEntityJux)world.getBlockTileEntity(x,y,z)).currStation="default";
-            
+           //System.out.println("BLOCK WAS BROKEN");
+           //if((RadioInit.getNearBy(new Location(x,y,z))).size()>0){
+        	 //  new MessagePacket(Reference.CHANNEL+"MESS","RADIO ALREADY NEAR BY DISABLING",x,y,z);
+           //}
+           //else
+        	   ((TileEntityJux)world.getBlockTileEntity(x,y,z)).currStation=RadioInit.stations.get(0).Name;
         }
-        super.onBlockAdded(world, x, y, z);
+       super.onBlockAdded(world, x, y, z);
     }
     public void breakBlock(World world, int x, int y, int z, int id, int meta) {
         if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT){
@@ -107,6 +111,9 @@ public class JuxBox extends BlockContainer {
 					e.printStackTrace();
 				}
     		}
+       		//else if((RadioInit.getNearBy(player)).size()==1){
+       			//new MessagePacket(Reference.CHANNEL+"MESS","FALSE",x,y,z);
+       		//}
         }
         super.breakBlock(world, x, y, z, id, meta);
     }

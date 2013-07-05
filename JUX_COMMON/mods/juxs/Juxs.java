@@ -22,13 +22,13 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
-import mods.juxs.block.JuxBox;
 import mods.juxs.block.ModBlocks;
-import mods.juxs.block.TileEntityJux;
 import mods.juxs.client.audio.SoundHandler;
 import mods.juxs.core.radio.RadioInit;
 import mods.juxs.core.radio.RadioStation;
 import mods.juxs.item.ModItems;
+import mods.juxs.juxbox.JuxBox;
+import mods.juxs.juxbox.TileEntityJux;
 import mods.juxs.lib.Reference;
 import mods.juxs.lib.Sounds;
 import mods.juxs.network.CommonProxy;
@@ -41,7 +41,7 @@ import net.minecraft.src.ModLoader;
 import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid=Reference.MOD_ID, name=Reference.MOD_NAME, version=Reference.VERSION)
-@NetworkMod(channels={Reference.CHANNEL+"REQUEST",Reference.CHANNEL+"CHANGEP",Reference.CHANNEL+"CHANGEN",Reference.CHANNEL+"CHECK",Reference.CHANNEL+"PLAY",Reference.CHANNEL+"STOP",Reference.CHANNEL+"TIMEUNTIL",Reference.CHANNEL+"REMOVE",Reference.CHANNEL+"NEXT"},clientSideRequired=true,serverSideRequired=true,packetHandler=PacketHandler.class)
+@NetworkMod(channels={Reference.CHANNEL+"MESS",Reference.CHANNEL+"REQUEST",Reference.CHANNEL+"CHANGEP",Reference.CHANNEL+"CHANGEN",Reference.CHANNEL+"CHECK",Reference.CHANNEL+"PLAY",Reference.CHANNEL+"STOP",Reference.CHANNEL+"TIMEUNTIL",Reference.CHANNEL+"REMOVE",Reference.CHANNEL+"NEXT"},clientSideRequired=true,serverSideRequired=true,packetHandler=PacketHandler.class)
 public class Juxs {
     @Instance(Reference.MOD_ID)
     public static Juxs instance;
@@ -69,9 +69,10 @@ public class Juxs {
 		juxBox= new JuxBox(2451);
 		NetworkRegistry.instance().registerGuiHandler(this, new GuiHandler());
         proxy.registerSoundHandler();
+        proxy.registerWorldHandler();
         TickRegistry.registerTickHandler(new JuxsTickHandler(EnumSet.of(TickType.SERVER)), Side.SERVER);
         ModBlocks.init();
-        ModItems.init();
+        //ModItems.init();
     }
     
     @Init public void init(FMLInitializationEvent Event) { }

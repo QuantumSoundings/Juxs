@@ -9,9 +9,9 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
 
-import mods.juxs.block.TileEntityJux;
 import mods.juxs.core.radio.Location;
 import mods.juxs.core.radio.RadioInit;
+import mods.juxs.juxbox.TileEntityJux;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.src.ModLoader;
@@ -19,25 +19,28 @@ import net.minecraft.src.ModLoader;
 public class RequestPacket extends JuxPacket{
 	public RequestPacket(String chan,int x,int y,int z){
 		super.setChannel(chan);
-        	if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT){
-        		super.writeXYZ(x, y, z);
-        		super.finalizeData();
-        	}
-        	else{
-        		super.writeXYZ(x, y, z);
-        		super.writeStation(RadioInit.findTheHardWay(new Location(x,y,z)));
-        		super.writeStation(RadioInit.getStation(RadioInit.findTheHardWay(new Location(x,y,z))).getPlaying().substring(0, RadioInit.getStation(RadioInit.findTheHardWay(new Location(x,y,z))).getPlaying().length()-4));        		
-        		super.finalizeData();
-        	}
+        if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT){
+        	super.writeXYZ(x, y, z);
+        	super.finalizeData();
+        }
+        else{
+        	super.writeXYZ(x, y, z);
+        	super.writeStation(RadioInit.findTheHardWay(new Location(x,y,z)));
+        	System.out.println(x+" "+y+" "+z+" "+RadioInit.findTheHardWay(new Location(x,y,z)));
+        	super.writeString(RadioInit.getStation(RadioInit.findTheHardWay(new Location(x,y,z))).getPlaying().substring(0, RadioInit.getStation(RadioInit.findTheHardWay(new Location(x,y,z))).getPlaying().length()-4));        		
+        	super.finalizeData();
+        }
         Side side = FMLCommonHandler.instance().getEffectiveSide();
         if (side == Side.SERVER) {
                 PacketDispatcher.sendPacketToAllAround(x, y, z, 50.0, 0, packet);
+                System.out.println("REQUEST SENT SERVER");
         } 
         else if (side == Side.CLIENT) {
                 PacketDispatcher.sendPacketToServer(packet);
         }
 		
 	}
+
 	public static void execute(DataInputStream in,Packet250CustomPayload packet){
 		try {
 			int x=in.readInt();

@@ -13,7 +13,9 @@ import cpw.mods.fml.relauncher.Side;
 
 import mods.juxs.core.radio.Location;
 import mods.juxs.core.radio.RadioInit;
+import mods.juxs.juxbox.TileEntityJux;
 import mods.juxs.lib.Reference;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
@@ -64,6 +66,7 @@ public class RadioUpdatePacket extends JuxPacket{
         			a=new Location(in.readInt(),in.readInt(),in.readInt());
         			RadioInit.getStation(station).removeBox(a);
     				RadioInit.stations.get(RadioInit.stations.indexOf(RadioInit.getStation(RadioInit.getPrevStation(station)))).addBox(a);
+    				//((TileEntityJux) Minecraft.getMinecraft().theWorld.getBlockTileEntity(a.x, a.y, a.z)).currStation=RadioInit.getPrevStation(station);
 
         	}
         	else if(packet.channel.equals(Reference.CHANNEL+"CHANGEN")){
@@ -71,7 +74,14 @@ public class RadioUpdatePacket extends JuxPacket{
     			a=new Location(in.readInt(),in.readInt(),in.readInt());
 				RadioInit.getStation(station).removeBox(a);
 				RadioInit.stations.get(RadioInit.stations.indexOf(RadioInit.getStation(RadioInit.getNextStation(station)))).addBox(a);
+				//((TileEntityJux) Minecraft.getMinecraft().theWorld.getBlockTileEntity(a.x, a.y, a.z)).currStation=RadioInit.getNextStation(station);
 
+
+        	}
+        	else if(packet.channel.equals(Reference.CHANNEL+"REMOVE")){
+        		station= in.readUTF();
+    			a=new Location(in.readInt(),in.readInt(),in.readInt());
+        		RadioInit.removeStationBox(station, a);
         	}
         }
         

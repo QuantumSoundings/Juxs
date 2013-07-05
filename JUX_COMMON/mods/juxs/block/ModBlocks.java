@@ -3,6 +3,7 @@ package mods.juxs.block;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import mods.juxs.Juxs;
+import mods.juxs.juxbox.TileEntityJux;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

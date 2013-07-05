@@ -4,7 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+import mods.juxs.core.radio.Location;
 import mods.juxs.core.radio.RadioInit;
+import mods.juxs.juxbox.TileEntityJux;
 import mods.juxs.lib.Reference;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -46,7 +48,20 @@ public class PacketHandler implements IPacketHandler{
         		play.addChatMessage(String.format("Next Song will begin in %d:%02d",minute,sec));
             }
         	else if(packet.channel.equals(Reference.CHANNEL+"REQUEST")){
+        		System.out.println("REQUEST RECIEVED CLIENT");
         		RequestPacket.execute(in, packet);
+        	}
+        	else if(packet.channel.equals(Reference.CHANNEL+"MESS")){
+        		String s=in.readUTF();
+        		if(s.equals("FALSE")){
+        			Location a= new Location(in.readInt(),in.readInt(),in.readInt());
+            		((TileEntityJux)ModLoader.getMinecraftInstance().theWorld.getBlockTileEntity(a.x, a.y, a.z)).isDisabled=false;
+            		((TileEntityJux)ModLoader.getMinecraftInstance().theWorld.getBlockTileEntity(a.x, a.y, a.z)).done=false;
+        		}
+        		else{
+        		((TileEntityJux)ModLoader.getMinecraftInstance().theWorld.getBlockTileEntity(in.readInt(), in.readInt(), in.readInt())).isDisabled=true;
+        		play.addChatMessage(s);
+        		}
         	}
         	else
         		SongPacket.execute(in,packet);

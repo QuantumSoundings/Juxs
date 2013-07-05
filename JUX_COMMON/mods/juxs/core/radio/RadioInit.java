@@ -25,6 +25,12 @@ public class RadioInit {
     	stations.add(new RadioStation(name));
     	System.out.println("[RadioInit]["+FMLCommonHandler.instance().getEffectiveSide().toString()+"] Added station "+name+" "+getStation(name).Name);
     }
+    public static boolean containsStation(String s){
+    	for(RadioStation r:stations)
+    		if(r.Name.equals(s))
+    			return true;
+    	return false;
+    }
     public static void addStationSong(String station,String song){
     	for(int i=0;i<stations.size();i++){
     		if(stations.get(i).Name.equals(station)){
@@ -38,6 +44,16 @@ public class RadioInit {
     	for(RadioStation s:stations){
     		if(s.Name.equals(station)) s.addBox(a);
     	}
+    	printBoxes();
+    }
+    public static void printBoxes(){
+    	for(RadioStation r:stations){
+    		System.out.println(r.Name+" "+r.boxes.toString());
+    	}
+    }
+    public static void clearBoxes(){
+    	for(RadioStation s:stations)
+    		s.boxes=new ArrayList<Location>();
     }
     public static void removeStationBox(String station, Location a){
     	for(RadioStation s:stations){
@@ -59,6 +75,7 @@ public class RadioInit {
     			if(a.x==b.x&&a.y==b.y&&a.z==b.z){
     				return s.Name;
     			}
+    			
     	return "";
     }
     public static ArrayList<Location> getNearBy(Location a){

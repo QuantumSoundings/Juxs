@@ -26,7 +26,6 @@ public class Sounds {
     public static void buildList(){   
     	//System.out.println("Building List");
 		File soundFolder= new File(Reference.MOD_DIR+"/juxs");
-		RadioInit.addStation("default");
 		for(File fileEntry:soundFolder.listFiles()){
 			//System.out.println("LSKfjsldkfja;sldkfj;alskdjf;l");
 			if(fileEntry.isDirectory()){
@@ -63,6 +62,9 @@ public class Sounds {
 				}
 			}
 			if(fileEntry.getName().contains(".ogg")){
+				if(!RadioInit.containsStation("default")){
+					RadioInit.addStation("default");
+				}
 				
 				try {
 					Ogg temp = new Ogg(fileEntry);
@@ -74,6 +76,9 @@ public class Sounds {
 				}			
 			}
 			else if(fileEntry.getName().contains(".wav")){
+				if(!RadioInit.containsStation("default")){
+					RadioInit.addStation("default");
+				}
 				AudioInputStream audioInputStream;
 				try {
 					audioInputStream = AudioSystem.getAudioInputStream(fileEntry);

@@ -4,7 +4,6 @@ package mods.juxs.juxbox;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import mods.juxs.block.TileEntityJux;
 import mods.juxs.core.radio.Location;
 import mods.juxs.core.radio.RadioInit;
 import mods.juxs.lib.Reference;
@@ -36,9 +35,9 @@ public class JuxBoxGUI extends GuiContainer {
         public void initGui(){
         	super.initGui();
                                          //id, x, y, width, height, text
-            buttonList.add(new GuiButton(1, ((width) /2)  , 65, 80, 20, "Next Station"));
-            buttonList.add(new GuiButton(2, ((width)/2)-80, 65, 80, 20, "Prev Station"));
-            buttonList.add(new GuiButton(3, ((width)/2)-80, 85,160, 20, "Next Track"));
+            buttonList.add(new GuiButton(1, ((width) /2)  , height/2-55, 80, 20, "Next Station"));
+            buttonList.add(new GuiButton(2, ((width)/2)-80, height/2-55, 80, 20, "Prev Station"));
+            buttonList.add(new GuiButton(3, ((width)/2)-80, height/2-35,160, 20, "Next Track (OPS ONLY)"));
             
         }
         @Override
@@ -47,17 +46,15 @@ public class JuxBoxGUI extends GuiContainer {
         		case 1:{
         			new RadioUpdatePacket(Reference.CHANNEL+"CHANGEN",jux.getStation(),jux.xCoord,jux.yCoord,jux.zCoord);
         			new RequestPacket(Reference.CHANNEL+"REQUEST",jux.xCoord,jux.yCoord,jux.zCoord);
-        			jux.currStation=RadioInit.getNextStation(jux.getStation());
         			break;
         		}
         		case 2:{
         			new RadioUpdatePacket(Reference.CHANNEL+"CHANGEP",jux.getStation(),jux.xCoord,jux.yCoord,jux.zCoord);
         			new RequestPacket(Reference.CHANNEL+"REQUEST",jux.xCoord,jux.yCoord,jux.zCoord);
-        			jux.currStation=RadioInit.getPrevStation(jux.getStation());
         			break;
         		}
         		case 3:{
-						new RadioUpdatePacket(Reference.CHANNEL+"NEXT",((TileEntityJux) (ModLoader.getMinecraftInstance().theWorld.getBlockTileEntity(jux.xCoord,jux.yCoord,jux.zCoord))).getStation(),jux.xCoord,jux.yCoord,jux.zCoord);
+						new RadioUpdatePacket(Reference.CHANNEL+"NEXT",jux.getStation(),jux.xCoord,jux.yCoord,jux.zCoord);
 					
         		}
         	
