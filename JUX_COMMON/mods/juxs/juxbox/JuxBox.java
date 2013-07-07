@@ -35,7 +35,7 @@ public class JuxBox extends BlockContainer {
 	//public String currStation;    
     public JuxBox(int id) {
         super(id, Material.rock);
-        this.setUnlocalizedName("JuxBox");
+        this.setUnlocalizedName("juxs:JuxBox");
         this.setHardness(2F);
         this.setCreativeTab(Juxs.juxTab);
     }
@@ -49,13 +49,13 @@ public class JuxBox extends BlockContainer {
         
     }
     
-    @Override
+    /*@Override
     @SideOnly(Side.CLIENT)
     public Icon getBlockTexture(IBlockAccess ba,int x,int y,int z, int s){
     	if(s>=2&&s<=5)return icon[0];
     	else if(s==1)return icon[2];
     	else return icon[1];
-    }
+    }*/
     @Override
     @SideOnly(Side.CLIENT)
     public Icon getIcon(int a, int b){
@@ -103,14 +103,10 @@ public class JuxBox extends BlockContainer {
         else{
         	Location player=new Location(x,y,z);
         	RadioInit.removeTheHardWay(player);
-       		if((RadioInit.getNearBy(player)).size()==0){
-    			//System.out.println(prox.contains(true));
     			try {
-					new SongPacket("",Reference.CHANNEL+"STOP",player.x,player.y,player.z);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-    		}
+					new SongPacket("",Reference.CHANNEL+"STOP","doesnt matter",player.x,player.y,player.z);
+				} catch (IOException e) {e.printStackTrace();}
+    		
        		//else if((RadioInit.getNearBy(player)).size()==1){
        			//new MessagePacket(Reference.CHANNEL+"MESS","FALSE",x,y,z);
        		//}

@@ -4,6 +4,7 @@ package mods.juxs.juxbox;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import mods.juxs.client.audio.JuxsSoundManager;
 import mods.juxs.core.radio.Location;
 import mods.juxs.core.radio.RadioInit;
 import mods.juxs.lib.Reference;
@@ -11,6 +12,7 @@ import mods.juxs.network.RadioUpdatePacket;
 import mods.juxs.network.RequestPacket;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.resources.ResourceLocation;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.src.ModLoader;
 import net.minecraft.util.StatCollector;
@@ -46,15 +48,18 @@ public class JuxBoxGUI extends GuiContainer {
         		case 1:{
         			new RadioUpdatePacket(Reference.CHANNEL+"CHANGEN",jux.getStation(),jux.xCoord,jux.yCoord,jux.zCoord);
         			new RequestPacket(Reference.CHANNEL+"REQUEST",jux.xCoord,jux.yCoord,jux.zCoord);
+        			JuxsSoundManager.stop(jux.xCoord, jux.yCoord, jux.zCoord);
         			break;
         		}
         		case 2:{
         			new RadioUpdatePacket(Reference.CHANNEL+"CHANGEP",jux.getStation(),jux.xCoord,jux.yCoord,jux.zCoord);
         			new RequestPacket(Reference.CHANNEL+"REQUEST",jux.xCoord,jux.yCoord,jux.zCoord);
+        			JuxsSoundManager.stop(jux.xCoord, jux.yCoord, jux.zCoord);
         			break;
         		}
         		case 3:{
 						new RadioUpdatePacket(Reference.CHANNEL+"NEXT",jux.getStation(),jux.xCoord,jux.yCoord,jux.zCoord);
+						JuxsSoundManager.stop(jux.xCoord, jux.yCoord, jux.zCoord);
 					
         		}
         	
@@ -76,7 +81,7 @@ public class JuxBoxGUI extends GuiContainer {
                         int par3) {
                 //draw your Gui here, only thing you need to change is the path
         	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.mc.renderEngine.bindTexture("/mods/juxs/textures/gui/juxbox_gui.png");
+        	this.mc.func_110434_K().func_110577_a(new ResourceLocation("juxs","/textures/gui/juxbox_gui.png"));
             int x = (width - xSize) / 2;
             int y = (height - ySize) / 2;
             drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);

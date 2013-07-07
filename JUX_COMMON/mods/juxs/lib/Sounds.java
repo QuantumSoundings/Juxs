@@ -33,30 +33,31 @@ public class Sounds {
 				for(File entry:fileEntry.listFiles()){
 					if(entry.getName().contains(".ogg")){
 						try {
+							String song=entry.getName();
 							Ogg temp = new Ogg(entry);
-							RadioInit.registerSong(entry.getName(),(int) (temp.getSeconds()*20));
+							RadioInit.registerSong(song,(int) (temp.getSeconds()*20));
 							//System.out.println("Registered song "+entry.getName());
-							RadioInit.addStationSong(fileEntry.getName(),entry.getName());
+							RadioInit.addStationSong(fileEntry.getName(),song);
 					
-							String song=fileEntry.getName()+"/"+entry.getName();
+							
 						
-							songs.add(((fileEntry.getName()+"/"+entry.getName())));
+							songs.add(song);
 						} catch (Exception e) {e.printStackTrace();}
 					}
 					else if(entry.getName().contains(".wav")){
 						AudioInputStream audioInputStream;
 						try {
+							String song=entry.getName();
 							audioInputStream = AudioSystem.getAudioInputStream(entry);
 							AudioFormat format = audioInputStream.getFormat();
 							long frames = audioInputStream.getFrameLength();
 							double durationInSeconds = (frames+0.0) / format.getFrameRate();
-							RadioInit.registerSong(entry.getName(),(int) (durationInSeconds*20));
+							RadioInit.registerSong(song,(int) (durationInSeconds*20));
 							//System.out.println("Registered song "+entry.getName());
-							RadioInit.addStationSong(fileEntry.getName(),entry.getName());
+							RadioInit.addStationSong(fileEntry.getName(),song);
 					
-							String song=fileEntry.getName()+"/"+entry.getName();
 						
-							songs.add(((fileEntry.getName()+"/"+entry.getName())));
+							songs.add(song);
 						} catch (UnsupportedAudioFileException e){e.printStackTrace();} catch (IOException e) {e.printStackTrace();}
 					}
 				}
@@ -68,9 +69,9 @@ public class Sounds {
 				
 				try {
 					Ogg temp = new Ogg(fileEntry);
-					RadioInit.registerSong(fileEntry.getName(),(int) (temp.getSeconds()*20));
-					RadioInit.addStationSong("default",fileEntry.getName());
-					songs.add(fileEntry.getName());
+					RadioInit.registerSong("juxs/"+fileEntry.getName(),(int) (temp.getSeconds()*20));
+					RadioInit.addStationSong("default","juxs/"+fileEntry.getName());
+					songs.add("juxs/"+fileEntry.getName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}			
@@ -87,7 +88,7 @@ public class Sounds {
 					double durationInSeconds = (frames+0.0) / format.getFrameRate();
 					RadioInit.registerSong(fileEntry.getName(),(int) (durationInSeconds*20));
 					RadioInit.addStationSong("default",fileEntry.getName());
-					songs.add(fileEntry.getName());
+					songs.add("juxs/"+fileEntry.getName());
 				} catch (UnsupportedAudioFileException e) {e.printStackTrace();} catch (IOException e) {e.printStackTrace();}
 			}
 		}

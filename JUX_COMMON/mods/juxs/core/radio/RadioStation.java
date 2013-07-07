@@ -65,8 +65,7 @@ public class RadioStation {
             for(Location a :boxes){
                 System.out.printf("Playing at %d %d %d",a.x,a.y,a.z);
                 try {
-                	if((RadioInit.getNearBy(a)).size()==0)
-                		new SongPacket(songs.get(curr).substring(0, songs.get(curr).length()-4),Reference.CHANNEL+"PLAY",a.x,a.y,a.z);
+                		new SongPacket(songs.get(curr),Reference.CHANNEL+"PLAY",this.Name,a.x,a.y,a.z);
 				} catch (IOException e) {e.printStackTrace();}
             }
         ticks=0;
