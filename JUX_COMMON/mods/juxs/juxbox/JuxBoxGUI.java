@@ -58,8 +58,9 @@ public class JuxBoxGUI extends GuiContainer {
         			break;
         		}
         		case 3:{
-						new RadioUpdatePacket(Reference.CHANNEL+"NEXT",jux.getStation(),jux.xCoord,jux.yCoord,jux.zCoord);
-						JuxsSoundManager.stop(jux.xCoord, jux.yCoord, jux.zCoord);
+					new RadioUpdatePacket(Reference.CHANNEL+"NEXT",jux.getStation(),jux.xCoord,jux.yCoord,jux.zCoord);
+        			//new RequestPacket(Reference.CHANNEL+"REQUEST",jux.xCoord,jux.yCoord,jux.zCoord);
+					//JuxsSoundManager.stop(jux.xCoord, jux.yCoord, jux.zCoord);
 					
         		}
         	

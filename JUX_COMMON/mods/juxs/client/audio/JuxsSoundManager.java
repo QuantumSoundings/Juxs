@@ -21,13 +21,21 @@ public class JuxsSoundManager{
 	
 	public static void playSong(int x, int y, int z, String song){
 		if (ModLoader.getMinecraftInstance().sndManager.sndSystem.playing("BgMusic"))
-        {
 			ModLoader.getMinecraftInstance().sndManager.sndSystem.stop("BgMusic");
-        }
+		Location a= new Location(x,y,z);
+		for(Location b:playingSongs.keySet()){
+			if(b.compareTo(a)==0){
+				ModLoader.getMinecraftInstance().sndManager.sndSystem.stop(playingSongs.get(b));
+				break;
+			}
+		}
 		playingSongs.put(new Location(x,y,z), song.substring(0,song.length()-4));
+		
 		((TileEntityJux) ModLoader.getMinecraftInstance().theWorld.getBlockTileEntity(x, y, z)).currPlaying=song.substring(0,song.length()-4);
-    	File temp= new File(Reference.MOD_DIR+"\\juxs\\"+((TileEntityJux) ModLoader.getMinecraftInstance().theWorld.getBlockTileEntity(x, y, z)).getStation()+"\\"+song);
-    	if(temp.exists()){
+    	
+		File temp= new File(Reference.MOD_DIR.subSequence(0, Reference.MOD_DIR.length()-7)+"\\juxs\\"+((TileEntityJux) ModLoader.getMinecraftInstance().theWorld.getBlockTileEntity(x, y, z)).getStation()+"\\"+song);
+    	
+		if(temp.exists()){
     		try {
     			ModLoader.getMinecraftInstance().sndManager.sndSystem.newStreamingSource(true,song.substring(0,song.length()-4),temp.toURI().toURL(), song, false, x, y, z, 2, 64.0F);
     		} catch (MalformedURLException e) {e.printStackTrace();}
@@ -36,12 +44,14 @@ public class JuxsSoundManager{
     		ModLoader.getMinecraftInstance().sndManager.sndSystem.play(song.substring(0,song.length()-4));
     	}
     	else{
+    		ModLoader.getMinecraftInstance().thePlayer.addChatMessage("I'm Sorry, but you do not have this file. Please make sure all files are in thier correct folders. Then contact a sever admin.");
     		System.out.println("ERROR "+song.substring(0,song.length()-4)+" was not found.");
     	}
 	}
 	public static void stopAll(){
 		for(Location b: playingSongs.keySet()){
 			ModLoader.getMinecraftInstance().sndManager.sndSystem.stop(playingSongs.get(b));
+			ModLoader.getMinecraftInstance().sndManager.sndSystem.removeSource(playingSongs.get(b));
 		}
 		playingSongs.clear();
 	}
@@ -52,6 +62,7 @@ public class JuxsSoundManager{
 			if(b.compareTo(a)==0){
 				ModLoader.getMinecraftInstance().sndManager.sndSystem.stop(playingSongs.get(b));
 				delete=b;
+				break;
 			}
 		}
 		playingSongs.remove(delete);

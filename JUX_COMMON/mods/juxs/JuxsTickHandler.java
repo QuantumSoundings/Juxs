@@ -12,15 +12,17 @@ import cpw.mods.fml.common.TickType;
 public class JuxsTickHandler implements ITickHandler{
     private EnumSet<TickType> tickSet;
     public static JuxsTickHandler instance;
+    public static boolean anySongs;
     public static JuxsTickHandler getHandler(){return instance;}
     public JuxsTickHandler(EnumSet<TickType> type){
         tickSet=type;
         instance=this;
-        
+        anySongs=true;      
     }
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData){
-        RadioInit.onTick();
+    	if(anySongs)
+    		RadioInit.onTick();
        // else if(RadioInit.juxboxes.size()>0)
        //     RadioInit.startRadio();
         

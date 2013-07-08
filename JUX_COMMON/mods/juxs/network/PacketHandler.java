@@ -77,6 +77,7 @@ public class PacketHandler implements IPacketHandler{
             	RadioUpdatePacket.execute(packet);
             }
             else if(packet.channel.equals(Reference.CHANNEL+"NEXT")){
+            	System.out.println("received next");
             	if(MinecraftServer.getServer().isSinglePlayer())
             		RadioInit.getStation(in.readUTF()).next();
             	else if(MinecraftServer.getServer().getConfigurationManager().getOps().contains(play.username.toLowerCase()))
