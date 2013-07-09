@@ -29,6 +29,12 @@ public class RadioStation {
 		songs.add(songName);
 		System.out.println("[RadioStation]["+FMLCommonHandler.instance().getEffectiveSide().toString()+"] "+songName+" Added to "+Name);
 	}
+	public String nextSong(int currSongPos){
+		return songs.get((currSongPos+1)%songs.size());
+	}
+	public String prevSong(int currSongPos){
+		return songs.get((currSongPos+songs.size()-1)%songs.size());
+	}
 	public void addBox(Location a){
 		boxes.add(a);
 		if(boxes.size()==1)

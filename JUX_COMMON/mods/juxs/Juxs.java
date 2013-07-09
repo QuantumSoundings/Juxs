@@ -8,6 +8,7 @@ import com.jcraft.jorbis.Block;
 
 
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.PreInit;
@@ -52,7 +53,7 @@ public class Juxs {
     public static net.minecraft.block.Block juxBox;
     public static ArrayList<RadioStation> stations;
     
-    @PreInit
+    @EventHandler
     public void preInit(FMLPreInitializationEvent event){
     	GameRegistry.registerTileEntity(TileEntityJux.class, "juxboxtile");
     	Reference.MOD_DIR=event.getModConfigurationDirectory().getAbsolutePath();
@@ -71,9 +72,10 @@ public class Juxs {
         proxy.registerSoundHandler();
         proxy.registerWorldHandler();
         TickRegistry.registerTickHandler(new JuxsTickHandler(EnumSet.of(TickType.SERVER)), Side.SERVER);
-        ModBlocks.init();
+        //ModBlocks.init();
         //ModItems.init();
     }
     
-    @Init public void init(FMLInitializationEvent Event) { }
+    @EventHandler public void init(FMLInitializationEvent Event) {ModBlocks.init();
+    ModItems.init(); }
 }

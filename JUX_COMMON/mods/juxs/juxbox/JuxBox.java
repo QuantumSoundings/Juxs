@@ -39,7 +39,6 @@ public class JuxBox extends BlockContainer {
         this.setHardness(2F);
         this.setCreativeTab(Juxs.juxTab);
     }
-    @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister ir) {
 
@@ -48,14 +47,6 @@ public class JuxBox extends BlockContainer {
         icon[2] = ir.registerIcon("juxs:juxbox_top");
         
     }
-    
-    /*@Override
-    @SideOnly(Side.CLIENT)
-    public Icon getBlockTexture(IBlockAccess ba,int x,int y,int z, int s){
-    	if(s>=2&&s<=5)return icon[0];
-    	else if(s==1)return icon[2];
-    	else return icon[1];
-    }*/
     @Override
     @SideOnly(Side.CLIENT)
     public Icon getIcon(int a, int b){

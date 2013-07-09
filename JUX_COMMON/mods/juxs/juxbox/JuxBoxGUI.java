@@ -12,7 +12,6 @@ import mods.juxs.network.RadioUpdatePacket;
 import mods.juxs.network.RequestPacket;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.resources.ResourceLocation;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.src.ModLoader;
 import net.minecraft.util.StatCollector;
@@ -82,7 +81,7 @@ public class JuxBoxGUI extends GuiContainer {
                         int par3) {
                 //draw your Gui here, only thing you need to change is the path
         	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        	this.mc.func_110434_K().func_110577_a(new ResourceLocation("juxs","/textures/gui/juxbox_gui.png"));
+        	this.mc.func_110434_K().func_110577_a(new net.minecraft.util.ResourceLocation("juxs","/textures/gui/juxbox_gui.png"));
             int x = (width - xSize) / 2;
             int y = (height - ySize) / 2;
             drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);

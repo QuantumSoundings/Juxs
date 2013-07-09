@@ -87,7 +87,7 @@ public class Sounds {
     		}
     	else{
     		RadioInit.addStation("NO STATIONS");
-    		RadioInit.addStationSong("NO STATION", "N/A.ogg");
+    		RadioInit.addStationSong("NO STATIONS", "N/A.ogg");
     		JuxsTickHandler.anySongs=false;
     	}
     }
